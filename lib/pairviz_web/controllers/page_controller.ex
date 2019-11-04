@@ -4,12 +4,10 @@ defmodule PairvizWeb.PageController do
   alias Date
 
   def index(conn, _params) do
-    # put all related repos into the same dir
-    repos = ["exrepa"]
-
     commits =
-      repos
+      Git.repos()
       |> Enum.flat_map(fn repo ->
+        # TODO: handle error but only give warning
         Git.pull(repo)
         Git.log(repo)
       end)

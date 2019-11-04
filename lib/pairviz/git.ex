@@ -1,4 +1,8 @@
 defmodule Pairviz.Git do
+  def repos(path \\ ".") do
+    File.ls!(path) |> Enum.filter(fn d -> File.exists?("#{d}/.git") end)
+  end
+
   def pull(repo) do
     with {res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo) do
       {:ok, res}
