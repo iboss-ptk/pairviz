@@ -22,8 +22,9 @@ defmodule Pairviz.Pairing do
   defp nil_to_map(nil), do: %{}
   defp nil_to_map(a), do: a
 
-  defp pairs([]), do: []
-  defp pairs([head | tail]), do: Enum.map(tail, &[head, &1]) ++ pairs(tail)
+  defp pairs(list, acc \\ [])
+  defp pairs([head | tail], acc), do: pairs(tail, acc ++ Enum.map(tail, &[head, &1]))
+  defp pairs([], acc), do: acc
 
   defp {:ok, res} >>> f, do: {:ok, f.(res)}
   defp {:error, err} >>> _, do: {:error, err}
