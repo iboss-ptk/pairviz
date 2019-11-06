@@ -57,9 +57,9 @@ defmodule Pairviz.PairingTest do
       %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 1"}
     ]
 
-    Pairing.calculate_pairing_score(commits) == %{
-      ["Nate", "Jones"] => 2,
-      ["Kim", "Ken"] => 2
-    }
+    assert Pairing.calculate_pairing_score(commits) == %{
+             ["Nate", "Jones"] => 2,
+             ["Kim", "Ken"] => 1
+           }
   end
 end

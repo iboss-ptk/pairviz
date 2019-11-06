@@ -11,7 +11,9 @@ defmodule PairvizWeb.PageController do
         Git.pull(repo)
         Git.log(repo)
       end)
-      |> Enum.map(fn %{date: date, message: message} -> "[#{date}] #{message}" end)
+      |> Pairviz.Pairing.calculate_pairing_score()
+      |> Map.to_list()
+      |> Enum.map(fn {[a, b], score} -> "[#{a} & #{b}] #{score}" end)
 
     # collect commits, group them by date
     # group all of them again by date => {date, [commits]}
