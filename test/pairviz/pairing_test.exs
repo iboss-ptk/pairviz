@@ -2,6 +2,8 @@ defmodule Pairviz.PairingTest do
   use ExUnit.Case
   alias Pairviz.Pairing, as: Pairing
 
+  # `extract_pairs/3`
+
   @pipe_around_name ~r/^.*\| (?<names>.*) \|.*$/
   @bracket_around_name ~r/^.*\[ (?<names>.*) \].*$/
 
@@ -43,5 +45,21 @@ defmodule Pairviz.PairingTest do
              ":"
            ]) ==
              {:ok, [["Nate", "Jones"], ["Nate", "Thomas"], ["Jones", "Thomas"]]}
+  end
+
+  # `calculate_pairing_score`
+
+  test "calculate pairing score by only counting days that people paired" do
+    commits = [
+      %{date: ~D[2019-10-02], message: "#123 | Nate & Jones | Hello world another day"},
+      %{date: ~D[2019-10-02], message: "#123 | Kim & Ken | Hello world from kk"},
+      %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 2"},
+      %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 1"}
+    ]
+
+    Pairing.calculate_pairing_score(commits) == %{
+      ["Nate", "Jones"] => 2,
+      ["Kim", "Ken"] => 2
+    }
   end
 end

@@ -20,7 +20,7 @@ defmodule Pairviz.Git do
     |> Enum.map(fn commit ->
       [date | _] = String.split(commit)
       [_ | message] = String.split(commit, " | ", parts: 2)
-      %{date: date, message: message}
+      %{date: Date.from_iso8601!(date), message: message}
     end)
   end
 end

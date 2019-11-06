@@ -18,6 +18,25 @@ defmodule Pairviz.Pairing do
       end
   end
 
+  def calculate_pairing_score(commits) do
+    commits
+    |> Enum.map(fn %{date: date, message: message} ->
+      {:ok, pairs} = extract_pairs(message, ~r/^.*\| (?<names>.*) \|.*$/, "&")
+      %{date: date, pairs: pairs}
+    end)
+    |> Enum.group_by(
+      fn %{date: date} -> date end,
+      fn %{pairs: pairs} -> Enum.uniq(pairs) end
+    )
+    # uniq pairs per day
+    |> Map.values()
+    |> Enum.reduce([], &(&1 ++ &2))
+    |> Enum.map(&List.flatten/1)
+    |> Enum.reduce(%{}, fn pair, acc ->
+      Map.update(acc, pair, 1, &(&1 + 1))
+    end)
+  end
+
   # util, to be extracted
   defp nil_to_map(nil), do: %{}
   defp nil_to_map(a), do: a
