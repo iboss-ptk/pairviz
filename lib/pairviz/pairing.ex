@@ -13,7 +13,7 @@ defmodule Pairviz.Pairing do
         case names do
           [] -> []
           [a] -> [[a, a]]
-          ns -> ns |> pairs
+          ns -> pairs(ns)
         end
       end
   end
