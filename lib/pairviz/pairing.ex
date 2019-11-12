@@ -21,7 +21,7 @@ defmodule Pairviz.Pairing do
         case names do
           [] -> []
           [a] -> [[a, a]]
-          ns -> pairs(ns)
+          ns -> pairs(ns) |> Enum.map(&normalize_pair/1)
         end
       end
   end
@@ -47,6 +47,10 @@ defmodule Pairviz.Pairing do
     |> Enum.reduce(%{}, fn pair, acc ->
       Map.update(acc, pair, 1, &(&1 + 1))
     end)
+  end
+
+  defp normalize_pair(pair) do
+    pair |> Enum.map(&String.capitalize/1) |> Enum.sort()
   end
 
   # util, to be extracted
