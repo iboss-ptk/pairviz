@@ -4,6 +4,9 @@ defmodule PairvizWeb.PageController do
   alias Date
 
   def index(conn, _params) do
+    pipe_around_name = ~r/^.*\|(?<names>.*)\|.*$/
+    bracket_around_name = ~r/^.*\[(?<names>.*)\].*$/
+
     commits =
       Git.repos()
       |> Enum.flat_map(fn repo ->
@@ -11,7 +14,10 @@ defmodule PairvizWeb.PageController do
         Git.pull(repo)
         Git.log(repo)
       end)
-      |> Pairviz.Pairing.calculate_pairing_score()
+      |> Pairviz.Pairing.calculate_pairing_score(
+        [pipe_around_name, bracket_around_name],
+        [":", "&"]
+      )
       |> Map.to_list()
       |> Enum.map(fn {[a, b], score} -> "[#{a} & #{b}] #{score}" end)
 
