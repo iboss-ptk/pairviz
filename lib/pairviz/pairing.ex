@@ -45,6 +45,18 @@ defmodule Pairviz.Pairing do
     end)
   end
 
+  def make_matrix(pairing_scores) do
+    labels = pairing_scores |> Map.keys() |> List.flatten() |> Enum.uniq() |> Enum.sort()
+
+    matrix =
+      labels
+      |> Enum.map(fn name_1 ->
+        labels |> Enum.map(fn name_2 -> pairing_scores[normalize_pair([name_1, name_2])] || 0 end)
+      end)
+
+    %{labels: labels, matrix: matrix}
+  end
+
   defp normalize_pair(pair) do
     pair |> Enum.map(&String.capitalize/1) |> Enum.sort()
   end

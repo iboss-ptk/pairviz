@@ -87,4 +87,50 @@ defmodule Pairviz.PairingTest do
                ["Ken", "Kim"] => 1
              }
   end
+
+  # `make_matrix`
+
+  test "create empty matrix if there is no pair so far" do
+    assert Pairing.make_matrix(%{}) == %{labels: [], matrix: []}
+  end
+
+  test "create 1x1 matrix if there is 1 people in the pool" do
+    assert Pairing.make_matrix(%{["Jones", "Jones"] => 1}) == %{
+             labels: [
+               "Jones"
+             ],
+             matrix: [[1]]
+           }
+  end
+
+  test "create 2x2 matrix if there is 2 people in the pool" do
+    assert Pairing.make_matrix(%{["Jones", "Nate"] => 2}) == %{
+             labels: [
+               "Jones",
+               "Nate"
+             ],
+             matrix: [
+               [0, 2],
+               [2, 0]
+             ]
+           }
+  end
+
+  test "create 3x3 matrix if there is 3 people in the pool" do
+    assert Pairing.make_matrix(%{
+             ["Jones", "Nate"] => 2,
+             ["Ken", "Nate"] => 1
+           }) == %{
+             labels: [
+               "Jones",
+               "Ken",
+               "Nate"
+             ],
+             matrix: [
+               [0, 0, 2],
+               [0, 0, 1],
+               [2, 1, 0]
+             ]
+           }
+  end
 end
