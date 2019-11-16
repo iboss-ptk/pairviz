@@ -1,15 +1,33 @@
-<section>
-  <%= for rows <- @matrix.matrix do %>
-    <div>
-      <%= for col <- rows do %>
-        | <%= col %> |
+<section class="flex justify-center container mx-auto">
+  <div class="table bg-gray-100">
+    <%= for {label, row} <- Enum.zip(@matrix.labels, @matrix.matrix)  do %>
+      <div class="table-row">
+          <div class="table-cell w-32 h-32 border border-gray-300"">
+            <div class=" flex items-center justify-center h-full">
+               <%= label %>
+            </div>
+          </div>
+        <%= for cell <- row do %>
+          <div class="table-cell w-32 h-32 border border-gray-300"">
+            <div class=" flex items-center justify-center h-full">
+               <%= cell %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="table-row">
+      <div class="table-cell"></div>
+      <%= for label <- @matrix.labels do %>
+        <div class="table-cell w-32 h-32 border border-gray-300"">
+          <div class="flex items-center justify-center h-full">
+            <%= label %>
+          </div>
+        </div>
       <% end %>
     </div>
-  <% end %>
-
-  <div>
-    <%= for label <- @matrix.labels do %>
-      | <%= label %> |
-    <% end %>
   </div>
 </section>
+
+  
