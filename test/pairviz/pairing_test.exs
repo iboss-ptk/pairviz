@@ -76,7 +76,8 @@ defmodule Pairviz.PairingTest do
       %{date: ~D[2019-10-02], message: "#123 | Jones & Nate | Hello world another day"},
       %{date: ~D[2019-10-02], message: "#123 [Kim & Ken & Jones ] Hello world from kk"},
       %{date: ~D[2019-10-01], message: "#123 | Nate: Jones | Hello world 2"},
-      %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 1"}
+      %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 1"},
+      %{date: ~D[2019-10-01], message: "#123 | Nate&Nate | narcisist"}
     ]
 
     assert Pairing.calculate_pairing_score(commits, @pipe_or_bracket_around_name, [":", "&"]) ==
@@ -84,7 +85,8 @@ defmodule Pairviz.PairingTest do
                ["Jones", "Ken"] => 1,
                ["Jones", "Kim"] => 1,
                ["Jones", "Nate"] => 2,
-               ["Ken", "Kim"] => 1
+               ["Ken", "Kim"] => 1,
+               ["Nate", "Nate"] => 1
              }
   end
 
