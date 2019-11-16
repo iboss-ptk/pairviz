@@ -7,7 +7,7 @@ defmodule PairvizWeb.PageController do
     pipe_around_name = ~r/^.*\|(?<names>.*)\|.*$/
     bracket_around_name = ~r/^.*\[(?<names>.*)\].*$/
 
-    commits =
+    matrix =
       Git.repos()
       |> Enum.flat_map(fn repo ->
         # TODO: handle error but only give warning
@@ -18,8 +18,7 @@ defmodule PairvizWeb.PageController do
         [pipe_around_name, bracket_around_name],
         [":", "&"]
       )
-      |> Map.to_list()
-      |> Enum.map(fn {[a, b], score} -> "[#{a} & #{b}] #{score}" end)
+      |> Pairviz.Pairing.make_matrix()
 
     # collect commits, group them by date
     # group all of them again by date => {date, [commits]}
@@ -29,6 +28,6 @@ defmodule PairvizWeb.PageController do
     # note: need to think about how to test. -> prep repos
     # deal with ssh later
 
-    render(conn, "index.html", commits: commits)
+    render(conn, "index.html", matrix: matrix)
   end
 end

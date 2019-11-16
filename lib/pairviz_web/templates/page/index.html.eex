@@ -1,5 +1,15 @@
 <section>
-  <%= for commit <- @commits do %>
-    <div><%= commit %></div>
-  <%= end %>
+  <%= for rows <- @matrix.matrix do %>
+    <div>
+      <%= for col <- rows do %>
+        | <%= col %> |
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= for label <- @matrix.labels do %>
+      | <%= label %> |
+    <% end %>
+  </div>
 </section>
