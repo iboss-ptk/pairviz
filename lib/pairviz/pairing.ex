@@ -34,16 +34,12 @@ defmodule Pairviz.Pairing do
     end)
     |> Enum.group_by(
       fn %{date: date} -> date end,
-      fn %{pairs: pairs} ->
-        pairs
-        |> Enum.reduce([], &(&1 ++ &2))
-      end
+      fn %{pairs: pairs} -> pairs end
     )
     # uniq pairs per day
     |> Map.values()
-    |> Enum.map(&Enum.uniq/1)
+    |> Enum.map(fn xs -> Enum.reduce(xs, [], &(&1 ++ &2)) |> Enum.uniq() end)
     |> Enum.reduce([], &(&1 ++ &2))
-    |> Enum.map(&List.flatten/1)
     |> Enum.reduce(%{}, fn pair, acc ->
       Map.update(acc, pair, 1, &(&1 + 1))
     end)
