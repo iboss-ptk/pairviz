@@ -82,11 +82,11 @@ defmodule Pairviz.PairingTest do
 
     assert Pairing.calculate_pairing_score(commits, @pipe_or_bracket_around_name, [":", "&"]) ==
              %{
-               ["Jones", "Ken"] => 1,
-               ["Jones", "Kim"] => 1,
-               ["Jones", "Nate"] => 2,
-               ["Ken", "Kim"] => 1,
-               ["Nate", "Nate"] => 1
+               ["Jones", "Ken"] => 0.17,
+               ["Jones", "Kim"] => 0.17,
+               ["Jones", "Nate"] => 0.33,
+               ["Ken", "Kim"] => 0.17,
+               ["Nate", "Nate"] => 0.17
              }
   end
 

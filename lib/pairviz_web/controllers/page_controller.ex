@@ -18,7 +18,7 @@ defmodule PairvizWeb.PageController do
         [pipe_around_name, bracket_around_name],
         [":", "&"]
       )
-      |> Pairviz.Pairing.make_matrix()
+      |> Pairviz.Pairing.make_matrix(&Pairviz.Color.to_viridis/1)
 
     # collect commits, group them by date
     # group all of them again by date => {date, [commits]}

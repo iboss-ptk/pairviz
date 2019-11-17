@@ -27,31 +27,41 @@ defmodule Pairviz.Pairing do
   end
 
   def calculate_pairing_score(commits, patterns, splitters) do
-    commits
-    |> Enum.map(fn %{date: date, message: message} ->
-      {:ok, pairs} = extract_pairs(message, patterns, splitters)
-      %{date: date, pairs: pairs}
-    end)
-    |> Enum.group_by(
-      fn %{date: date} -> date end,
-      fn %{pairs: pairs} -> pairs end
-    )
-    # uniq pairs per day
-    |> Map.values()
-    |> Enum.map(fn xs -> Enum.reduce(xs, [], &(&1 ++ &2)) |> Enum.uniq() end)
-    |> Enum.reduce([], &(&1 ++ &2))
-    |> Enum.reduce(%{}, fn pair, acc ->
-      Map.update(acc, pair, 1, &(&1 + 1))
-    end)
+    pairing_count =
+      commits
+      |> Enum.map(fn %{date: date, message: message} ->
+        {:ok, pairs} = extract_pairs(message, patterns, splitters)
+        %{date: date, pairs: pairs}
+      end)
+      |> Enum.group_by(
+        fn %{date: date} -> date end,
+        fn %{pairs: pairs} -> pairs end
+      )
+      # uniq pairs per day
+      |> Map.values()
+      |> Enum.map(fn xs -> Enum.reduce(xs, [], &(&1 ++ &2)) |> Enum.uniq() end)
+      |> Enum.reduce([], &(&1 ++ &2))
+      |> Enum.reduce(%{}, fn pair, acc ->
+        Map.update(acc, pair, 1, &(&1 + 1))
+      end)
+
+    total = pairing_count |> Map.values() |> Enum.sum()
+
+    pairing_count
+    |> Enum.map(fn {k, v} -> {k, Float.round(v / total, 2)} end)
+    |> Enum.into(%{})
   end
 
-  def make_matrix(pairing_scores) do
+  def make_matrix(pairing_scores, transformer \\ fn x -> x end) do
     labels = pairing_scores |> Map.keys() |> List.flatten() |> Enum.uniq() |> Enum.sort()
 
     matrix =
       labels
       |> Enum.map(fn name_1 ->
-        labels |> Enum.map(fn name_2 -> pairing_scores[normalize_pair([name_1, name_2])] || 0 end)
+        labels
+        |> Enum.map(fn name_2 ->
+          transformer.(pairing_scores[normalize_pair([name_1, name_2])] || 0)
+        end)
       end)
 
     %{labels: labels, matrix: matrix}
