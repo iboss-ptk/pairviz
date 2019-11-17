@@ -20,14 +20,6 @@ defmodule PairvizWeb.PageController do
       )
       |> Pairviz.Pairing.make_matrix(&Pairviz.Color.to_viridis/1)
 
-    # collect commits, group them by date
-    # group all of them again by date => {date, [commits]}
-    # extract person id => { date, [p1, p2] } and [p1, p2] == [p2, p1] then uniq by date
-    # decay
-
-    # note: need to think about how to test. -> prep repos
-    # deal with ssh later
-
     render(conn, "index.html", matrix: matrix)
   end
 end

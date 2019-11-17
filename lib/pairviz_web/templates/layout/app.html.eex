@@ -4,19 +4,14 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Pairviz · Phoenix Framework</title>
+    <title>Pairviz · visualizing pairing history</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
-  <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-          </ul>
-        </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
+  <body class="bg-gray-800">
+    <header class="bg-blue-800">
+      <section class="flex container justify-center p-5">
+        <a href="/" class="font-mono text-5xl text-gray-200 hover:text-blue-200">
+          < Pairviz >
         </a>
       </section>
     </header>

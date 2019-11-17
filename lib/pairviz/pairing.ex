@@ -83,9 +83,6 @@ defmodule Pairviz.Pairing do
   defp {:error, err} >>> _, do: {:error, err}
   defp :error >>> _, do: {:error, nil}
 
-  # defp map({:ok, res}, f), do: {:ok, f.(res)}
-  # defp map(a, _), do: a  
-
   defp map_error({:error, err}, f), do: {:error, f.(err)}
   defp map_error(:error, f), do: {:error, f.(nil)}
   defp map_error(a, _), do: a
