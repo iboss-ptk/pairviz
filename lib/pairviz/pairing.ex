@@ -11,7 +11,7 @@ defmodule Pairviz.Pairing do
     Regex.named_captures(pattern, commit_message)
     |> nil_to_map
     |> Map.fetch("names")
-    |> map_error(fn _ -> "name can't be found" end) >>>
+    |> map_error(fn _ -> "name can't be extracted" end) >>>
       fn name_string ->
         names =
           name_string
@@ -30,9 +30,20 @@ defmodule Pairviz.Pairing do
     pairing_count =
       commits
       |> Enum.map(fn %{date: date, message: message} ->
-        {:ok, pairs} = extract_pairs(message, patterns, splitters)
-        %{date: date, pairs: pairs}
+        with {:ok, pairs} <- extract_pairs(message, patterns, splitters) do
+          %{date: date, pairs: pairs}
+        else
+          {:error, err_msg} ->
+            IO.puts("""
+
+            Error: #{err_msg}
+            > (commit message) #{message}
+            """)
+
+            nil
+        end
       end)
+      |> Enum.filter(fn commit -> commit != nil end)
       |> Enum.group_by(
         fn %{date: date} -> date end,
         fn %{pairs: pairs} -> pairs end

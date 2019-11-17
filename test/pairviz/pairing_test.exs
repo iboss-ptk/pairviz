@@ -29,7 +29,7 @@ defmodule Pairviz.PairingTest do
 
   test "extract pair failed when no name found" do
     assert Pairing.extract_pairs("#123 Hello world", @pipe_around_name, ":") ==
-             {:error, "name can't be found"}
+             {:error, "name can't be extracted"}
   end
 
   test "extract pair allow multiple splitters" do
@@ -77,7 +77,8 @@ defmodule Pairviz.PairingTest do
       %{date: ~D[2019-10-02], message: "#123 [Kim & Ken & Jones ] Hello world from kk"},
       %{date: ~D[2019-10-01], message: "#123 | Nate: Jones | Hello world 2"},
       %{date: ~D[2019-10-01], message: "#123 | Nate&Jones | Hello world 1"},
-      %{date: ~D[2019-10-01], message: "#123 | Nate&Nate | narcisist"}
+      %{date: ~D[2019-10-01], message: "#123 | Nate&Nate | narcisist"},
+      %{date: ~D[2019-10-01], message: "random commit"}
     ]
 
     assert Pairing.calculate_pairing_score(commits, @pipe_or_bracket_around_name, [":", "&"]) ==
