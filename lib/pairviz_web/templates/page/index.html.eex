@@ -10,7 +10,7 @@
 
         <%= for cell <- row do %>
           <div class="table-cell w-32 h-32"  style="background: <%= cell %>">
-            <div class="flex items-center justify-center h-full text-gray-100">
+            <div class="flex items-center justify-center h-full text-gray-100 select-none">
                 &nbsp;
             </div>
           </div>

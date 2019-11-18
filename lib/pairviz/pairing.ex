@@ -27,7 +27,7 @@ defmodule Pairviz.Pairing do
   end
 
   def calculate_pairing_score(commits, patterns, splitters) do
-    pairing_count =
+    pairing_by_date =
       commits
       |> Enum.map(fn %{date: date, message: message} ->
         with {:ok, pairs} <- extract_pairs(message, patterns, splitters) do
@@ -48,12 +48,25 @@ defmodule Pairviz.Pairing do
         fn %{date: date} -> date end,
         fn %{pairs: pairs} -> pairs end
       )
-      # uniq pairs per day
-      |> Map.values()
-      |> Enum.map(fn xs -> Enum.reduce(xs, [], &(&1 ++ &2)) |> Enum.uniq() end)
+
+    dates = Map.keys(pairing_by_date)
+    coeff = fn date -> decay_coeff(date, Enum.max(dates), Enum.min(dates)) end
+
+    pairing_count =
+      pairing_by_date
+      |> Enum.map(fn {date, xs} ->
+        coeff_val = coeff.(date)
+
+        pairs =
+          xs
+          |> Enum.reduce([], &(&1 ++ &2))
+          |> Enum.uniq()
+
+        pairs |> Enum.map(&{coeff_val, &1})
+      end)
       |> Enum.reduce([], &(&1 ++ &2))
-      |> Enum.reduce(%{}, fn pair, acc ->
-        Map.update(acc, pair, 1, &(&1 + 1))
+      |> Enum.reduce(%{}, fn {coeff, pair}, acc ->
+        Map.update(acc, pair, coeff, &(&1 + coeff))
       end)
 
     total = pairing_count |> Map.values() |> Enum.sum()
@@ -76,6 +89,18 @@ defmodule Pairviz.Pairing do
       end)
 
     %{labels: labels, matrix: matrix}
+  end
+
+  def decay_coeff(date, date_max, date_min) do
+    if Date.compare(date_max, date_min) == :lt do
+      raise RuntimeError, message: "max date must be greater than min date"
+    end
+
+    if Date.compare(date, date_max) == :gt || Date.compare(date, date_min) == :lt do
+      raise RuntimeError, message: "date is out of range"
+    end
+
+    Date.diff(date, date_min) / Date.diff(date_max, date_min)
   end
 
   defp normalize_pair(pair) do

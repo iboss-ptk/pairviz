@@ -71,7 +71,7 @@ defmodule Pairviz.PairingTest do
 
   # `calculate_pairing_score`
 
-  test "calculate pairing score by only counting days that people paired" do
+  test "calculate pairing score by only counting days that people paired with decay" do
     commits = [
       %{date: ~D[2019-10-02], message: "#123 | Jones & Nate | Hello world another day"},
       %{date: ~D[2019-10-02], message: "#123 [Kim & Ken & Jones ] Hello world from kk"},
@@ -81,13 +81,23 @@ defmodule Pairviz.PairingTest do
       %{date: ~D[2019-10-01], message: "random commit"}
     ]
 
+    # 2019-10-02 (coeff == 1)
+    # ["Jones", "Nate"] => 1,
+    # ["Jones", "Ken"] => 1,
+    # ["Jones", "Kim"] => 1,
+    # ["Ken", "Kim"] => 1,
+
+    # 2019-10-01 (coeff == 0)
+    # ["Jones", "Nate"] => 0,
+    # ["Nate", "Nate"] => 0
+
     assert Pairing.calculate_pairing_score(commits, @pipe_or_bracket_around_name, [":", "&"]) ==
              %{
-               ["Jones", "Ken"] => 0.17,
-               ["Jones", "Kim"] => 0.17,
-               ["Jones", "Nate"] => 0.33,
-               ["Ken", "Kim"] => 0.17,
-               ["Nate", "Nate"] => 0.17
+               ["Jones", "Nate"] => 0.25,
+               ["Jones", "Ken"] => 0.25,
+               ["Jones", "Kim"] => 0.25,
+               ["Ken", "Kim"] => 0.25,
+               ["Nate", "Nate"] => 0
              }
   end
 
@@ -135,5 +145,36 @@ defmodule Pairviz.PairingTest do
                [2, 1, 0]
              ]
            }
+  end
+
+  # `decay_coeff` 
+
+  test "if the date is at max date, the coeff is 1" do
+    assert Pairing.decay_coeff(~D[2019-10-02], ~D[2019-10-02], ~D[2019-10-01]) == 1
+  end
+
+  test "if the date is at min date, the coeff is 0" do
+    assert Pairing.decay_coeff(~D[2019-10-01], ~D[2019-10-02], ~D[2019-10-01]) == 0
+  end
+
+  test "if the date is in between min and max date, the coeff is (date - min_date) / (max_date - min_date)" do
+    assert Pairing.decay_coeff(~D[2019-10-02], ~D[2019-10-03], ~D[2019-10-01]) == 1 / 2
+    assert Pairing.decay_coeff(~D[2018-10-01], ~D[2018-10-30], ~D[2018-09-01]) == 30 / 59
+  end
+
+  test "if the date is less than min date or greater than max date, it raise `date is out of range`" do
+    assert_raise RuntimeError, ~r/^date is out of range/, fn ->
+      Pairing.decay_coeff(~D[2019-09-30], ~D[2019-10-02], ~D[2019-10-01])
+    end
+
+    assert_raise RuntimeError, ~r/^date is out of range/, fn ->
+      Pairing.decay_coeff(~D[2019-10-03], ~D[2019-10-02], ~D[2019-10-01])
+    end
+  end
+
+  test "if the max date is less than min date, it raise `max date must be greater than min date`" do
+    assert_raise RuntimeError, ~r/^max date must be greater than min date/, fn ->
+      Pairing.decay_coeff(~D[2019-09-30], ~D[2019-09-30], ~D[2019-10-01])
+    end
   end
 end
