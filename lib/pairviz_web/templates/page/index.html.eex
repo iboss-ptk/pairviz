@@ -8,10 +8,12 @@
             </div>
           </div>
 
-        <%= for cell <- row do %>
-          <div class="table-cell w-32 h-32"  style="background: <%= cell %>">
-            <div class="flex items-center justify-center h-full text-gray-100 select-none">
-                &nbsp;
+        <%= for { score, hex } <- row do %>
+          <div class="table-cell w-32 h-32"  style="background: <%= hex %>">
+            <div
+              class="flex items-center justify-center h-full text-gray-100 select-none"
+              style="font-size: <%= score * 2 %>rem">
+              <%= score %>
             </div>
           </div>
         <% end %>

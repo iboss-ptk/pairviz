@@ -18,7 +18,9 @@ defmodule PairvizWeb.PageController do
         [pipe_around_name, bracket_around_name],
         [":", "&"]
       )
-      |> Pairviz.Pairing.make_matrix(&Pairviz.Color.to_viridis/1)
+      |> Pairviz.Pairing.make_matrix(fn score ->
+        {score, Pairviz.Color.to_viridis(score)}
+      end)
 
     render(conn, "index.html", matrix: matrix)
   end
