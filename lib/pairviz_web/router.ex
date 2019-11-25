@@ -17,6 +17,7 @@ defmodule PairvizWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    post "/update", PageController, :git_pull
   end
 
   # Other scopes may use custom stacks.

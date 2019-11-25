@@ -1,4 +1,4 @@
-<section class="flex justify-center container mx-auto mt-40">
+<section class="flex flex-col items-center container mx-auto mt-40">
   <div class="table bg-gray-700 text-gray-400 font-mono">
     <%= for {label, row} <- Enum.zip(@matrix.labels, @matrix.matrix)  do %>
       <div class="table-row">
@@ -31,6 +31,15 @@
       <% end %>
     </div>
   </div>
+
+  <div>
+    <%= button(
+        "Update",
+        to: "/update",
+        method: "post",
+        class: "bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mt-20"
+        ) %>
+  <div>
 </section>
 
   

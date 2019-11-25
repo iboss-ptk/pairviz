@@ -9,11 +9,7 @@ defmodule PairvizWeb.PageController do
 
     matrix =
       Git.repos()
-      |> Enum.flat_map(fn repo ->
-        # TODO: handle error but only give warning
-        Git.pull(repo)
-        Git.log(repo)
-      end)
+      |> Enum.flat_map(&Git.log/1)
       |> Pairviz.Pairing.calculate_pairing_score(
         [pipe_around_name, bracket_around_name],
         [":", "&"]
@@ -23,5 +19,14 @@ defmodule PairvizWeb.PageController do
       end)
 
     render(conn, "index.html", matrix: matrix)
+  end
+
+  def git_pull(conn, params) do
+    Git.repos()
+    |> Enum.map(fn repo ->
+      # TODO: handle error but only give warning
+      Git.pull(repo)
+    end)
+    index(conn, params)
   end
 end
