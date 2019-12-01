@@ -1,4 +1,4 @@
-<section class="flex flex-col items-center container mx-auto mt-40">
+<section class="flex flex-col items-center container mx-auto mt-40 mb-40">
   <div class="table bg-gray-700 text-gray-400 font-mono">
     <%= for {label, row} <- Enum.zip(@matrix.labels, @matrix.matrix)  do %>
       <div class="table-row">
