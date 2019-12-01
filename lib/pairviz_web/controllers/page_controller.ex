@@ -16,10 +16,9 @@ defmodule PairvizWeb.PageController do
         _ -> false
       end)
 
-    # TODO: use redirect instead
     conn
     |> put_flash(:error, pull_res)
-    |> render("index.html", matrix: create_matrix())
+    |> redirect(to: "/", matrix: create_matrix())
   end
 
   defp create_matrix() do
