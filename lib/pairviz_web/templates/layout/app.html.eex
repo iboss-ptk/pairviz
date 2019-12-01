@@ -16,7 +16,13 @@
       </section>
     </header>
     <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <%= if get_flash(@conn, :info) do %>
+        <%= for {_, msg} <- get_flash(@conn, :info) do %>
+          <div class="alert alert-info" role="alert">
+            <%= text_to_html msg %>
+          </div>
+        <% end %>
+      <% end %>
 
       <%= if get_flash(@conn, :error) do %>
         <%= for {_, msg} <- get_flash(@conn, :error) do %>

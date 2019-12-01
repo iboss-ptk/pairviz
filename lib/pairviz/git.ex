@@ -5,12 +5,12 @@ defmodule Pairviz.Git do
 
   def pull(repo) do
     with {res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo, stderr_to_stdout: true) do
-      {:ok, res}
+      {:ok, "[✔] #{repo}"}
     else
       {res, code} ->
         {:error,
          """
-         [#{repo}]
+         [✘] #{repo}
          exit code #{code}:
 
          #{res}

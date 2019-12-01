@@ -8,16 +8,17 @@ defmodule PairvizWeb.PageController do
   end
 
   def git_pull(conn, _params) do
-    pull_res =
+    {ok, err} =
       Git.repos()
       |> Enum.map(&Git.pull/1)
-      |> Enum.filter(fn
-        {:error, _res} -> true
+      |> Enum.split_with(fn
+        {:ok, _res} -> true
         _ -> false
       end)
 
     conn
-    |> put_flash(:error, pull_res)
+    |> put_flash(:info, ok)
+    |> put_flash(:error, err)
     |> redirect(to: "/", matrix: create_matrix())
   end
 
