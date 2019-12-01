@@ -4,11 +4,20 @@ defmodule Pairviz.Git do
   end
 
   def pull(repo) do
-    with {res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo) do
+    with {res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo, stderr_to_stdout: true) do
       {:ok, res}
     else
-      {res, code} -> {:error, "exit code #{code}: #{res}"}
-      any -> {:error, "unknown error: #{any}"}
+      {res, code} ->
+        {:error,
+         """
+         [#{repo}]
+         exit code #{code}:
+
+         #{res}
+         """}
+
+      any ->
+        {:error, "unknown error: #{any}"}
     end
   end
 
