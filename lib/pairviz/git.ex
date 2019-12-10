@@ -6,7 +6,7 @@ defmodule Pairviz.Git do
   end
 
   def pull(repo) do
-    with {res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo, stderr_to_stdout: true) do
+    with {_res, 0} <- System.cmd("git", ["pull", "--force"], cd: repo, stderr_to_stdout: true) do
       {:ok, "[✔] #{repo}"}
     else
       {res, code} ->
