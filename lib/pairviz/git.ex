@@ -1,6 +1,8 @@
 defmodule Pairviz.Git do
   def repos(path \\ ".") do
-    File.ls!(path) |> Enum.filter(fn d -> File.exists?("#{d}/.git") end)
+    File.ls!(path)
+    |> Enum.filter(fn d -> File.exists?("#{path}/#{d}/.git") end)
+    |> Enum.map(fn d -> "#{path}/#{d}" end)
   end
 
   def pull(repo) do

@@ -26,7 +26,7 @@ defmodule PairvizWeb.PageController do
     pipe_around_name = ~r/^.*\|(?<names>.*)\|.*$/
     bracket_around_name = ~r/^.*\[(?<names>.*)\].*$/
 
-    Git.repos()
+    Git.repos("repositories")
     |> Enum.flat_map(&Git.log/1)
     |> Pairviz.Pairing.calculate_pairing_score(
       [pipe_around_name, bracket_around_name],
