@@ -1,19 +1,36 @@
 # Pairviz
 
-To start your Phoenix server:
+Pairing visualization from your git history
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+## Setup
+
+To set up, you need to have a directory that looks like this:
+
+```
+|- repo_1/
+|- repo_2/
+|- repo_3/
+.
+.
+.
+|- repo_n/
+|- pairviz.exs
+```
+
+And you need to be able to interact with remote repo from your shell since
+we are going to reuse your whole .ssh folder.
+
+To run via docker:
+
+```sh
+docker run \
+  -v ~/.ssh:/root/.ssh \ 
+  -v "$(pwd)":/workspace/repositories \ 
+  -v "$(pwd)"/pairviz.exs:/workspace/config/pairviz.exs \ 
+  -p 4000:4000 \
+  -it \
+  pairviz
+```
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
