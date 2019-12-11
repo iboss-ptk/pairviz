@@ -1,5 +1,5 @@
 defmodule Pairviz.Pairing do
-  def extract_pairs(commit_message, patterns, splitters) do
+  def extract_pairs(commit_message, patterns, splitters, name_list \\ nil) do
     pattern =
       if is_list(patterns) do
         patterns
@@ -17,6 +17,9 @@ defmodule Pairviz.Pairing do
           name_string
           |> String.split(splitters)
           |> Enum.map(&String.trim/1)
+          |> Enum.filter(fn name ->
+            name_list == nil || name_list |> Enum.member?(name)
+          end)
 
         case names do
           [] -> []
@@ -26,11 +29,11 @@ defmodule Pairviz.Pairing do
       end
   end
 
-  def calculate_pairing_score(commits, patterns, splitters) do
+  def calculate_pairing_score(commits, patterns, splitters, name_list \\ nil) do
     pairing_by_date =
       commits
       |> Enum.map(fn %{date: date, message: message} ->
-        with {:ok, pairs} <- extract_pairs(message, patterns, splitters) do
+        with {:ok, pairs} <- extract_pairs(message, patterns, splitters, name_list) do
           %{date: date, pairs: pairs}
         else
           {:error, err_msg} ->

@@ -29,7 +29,8 @@ defmodule PairvizWeb.PageController do
     |> Enum.flat_map(&Git.log/1)
     |> Pairviz.Pairing.calculate_pairing_score(
       config[:name_pattern],
-      config[:name_splitter]
+      config[:name_splitter],
+      config[:name_list]
     )
     |> Pairviz.Pairing.make_matrix(fn score ->
       {score, Pairviz.Color.to_viridis(score)}

@@ -69,6 +69,17 @@ defmodule Pairviz.PairingTest do
              {:ok, [["Jones", "Nate"], ["Nate", "Thomas"], ["Jones", "Thomas"]]}
   end
 
+  test "extract only whitelisted name" do
+    assert Pairing.extract_pairs("#123 | Nate&Jones&Thomas | Hello world", @pipe_around_name, "&", ["Nate", "Jones"]) ==
+             {:ok, [["Jones", "Nate"]]}
+
+    assert Pairing.extract_pairs("#123 | Nate &Jones | Hello world", @pipe_around_name, "&", ["Nate"]) ==
+             {:ok, [["Nate", "Nate"]]}
+
+    assert Pairing.extract_pairs("#123 | Nate &Jones | Hello world", @pipe_around_name, "&", ["Kim"]) ==
+             {:ok, []}
+  end
+
   # `calculate_pairing_score`
 
   test "calculate pairing score by only counting days that people paired with decay" do
