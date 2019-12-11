@@ -29,7 +29,7 @@ docker run \
   -v "$(pwd)"/pairviz.exs:/workspace/config/pairviz.exs \ 
   -p 4000:4000 \
   -it \
-  pairviz
+  ibosz/pairviz
 ```
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
